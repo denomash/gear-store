@@ -1,3 +1,8 @@
-const Query = {};
+const Query = {
+  async items(arent, args, context, info) {
+    const items = await context.db.query.items();
+    return items;
+  },
+};
 
-module.exports = Query;
+export default Query;
