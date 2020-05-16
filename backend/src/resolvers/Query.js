@@ -1,7 +1,15 @@
+import { forwardTo } from "prisma-binding";
+
 const Query = {
-  async items(arent, args, context, info) {
-    const items = await context.db.query.items();
-    return items;
+  // items: forwardTo('db')
+  async items(parent, args, context, info) {
+    const itemz = await context.db.query.items();
+
+    const users = await context.db.query.users();
+
+    console.log(">>>><<<<", itemz);
+    console.log(">>>><<<<", users, ">>>><<<<");
+    return itemz;
   },
 };
 

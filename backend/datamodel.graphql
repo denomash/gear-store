@@ -14,3 +14,9 @@ type Item {
   # createdAt: DateTime!
   # updatedAt: DateTime!
 }
+
+type Dog {
+  id: ID! @id
+  name: String!
+  age: Int!
+}
