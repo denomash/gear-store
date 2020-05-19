@@ -1,11 +1,31 @@
 import React, { Component } from "react";
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
+import Router from "next/router";
 
 import Form from "./styles/Form";
+import Error from "./ErrorMessage";
 import formatMoney from "../lib/formatMoney";
 
-
+export const CREATE_ITEM_MUTATION = gql`
+  mutation CREATE_ITEM_MUTATION(
+    $title: String!
+    $description: String!
+    $price: Int!
+    $image: String
+    $largeImage: String
+  ) {
+    createItem(
+      title: $title
+      description: $description
+      price: $price
+      image: $image
+      largeImage: $largeImage
+    ) {
+      id
+    }
+  }
+`;
 
 class CreateItem extends Component {
   state = {
@@ -24,52 +44,66 @@ class CreateItem extends Component {
 
   render() {
     return (
-      <Form onSubmit={e => {
-          e.preventDefault()
-          console.log(this.state);
-          
-      }}>
-        <fieldset>
-          <label htmlFor="title">
-            Title
-            <input
-              type="text"
-              id="title"
-              name="title"
-              placeholder="Title"
-              required
-              value={this.state.title}
-              onChange={this.handleChange}
-            />
-          </label>
+      <Mutation mutation={CREATE_ITEM_MUTATION} variables={this.state}>
+        {(CreateItem, { loading, error }) => (
+          <Form
+            onSubmit={async (e) => {
+              // Stop the form from submitting
+              e.preventDefault();
+              //   call the mutation
+              const res = await CreateItem();
+              // change to the single item page
+              console.log(res);
+              Router.push({
+                pathname: "/item",
+                query: { id: res.data.createItem.id },
+              });
+            }}
+          >
+            <Error error={error} />
+            <fieldset disabled={loading} aria-busy={loading}>
+              <label htmlFor="title">
+                Title
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  placeholder="Title"
+                  required
+                  value={this.state.title}
+                  onChange={this.handleChange}
+                />
+              </label>
 
-          <label htmlFor="price">
-            Price
-            <input
-              type="number"
-              id="price"
-              name="price"
-              placeholder="Price"
-              required
-              value={this.state.price}
-              onChange={this.handleChange}
-            />
-          </label> 
+              <label htmlFor="price">
+                Price
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  placeholder="Price"
+                  required
+                  value={this.state.price}
+                  onChange={this.handleChange}
+                />
+              </label>
 
-          <label htmlFor="description">
-            Description
-            <textarea
-              id="description"
-              name="description"
-              placeholder="Enter a Description"
-              required
-              value={this.state.description}
-              onChange={this.handleChange}
-            />
-            <button type="submit">Submit</button>
-          </label>
-        </fieldset>
-      </Form>
+              <label htmlFor="description">
+                Description
+                <textarea
+                  id="description"
+                  name="description"
+                  placeholder="Enter a Description"
+                  required
+                  value={this.state.description}
+                  onChange={this.handleChange}
+                />
+                <button type="submit">Submit</button>
+              </label>
+            </fieldset>
+          </Form>
+        )}
+      </Mutation>
     );
   }
 }
