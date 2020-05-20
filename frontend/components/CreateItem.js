@@ -70,13 +70,13 @@ class CreateItem extends Component {
   render() {
     return (
       <Mutation mutation={CREATE_ITEM_MUTATION} variables={this.state}>
-        {(CreateItem, { loading, error }) => (
+        {(createItem, { loading, error }) => (
           <Form
             onSubmit={async (e) => {
               // Stop the form from submitting
               e.preventDefault();
               //   call the mutation
-              const res = await CreateItem();
+              const res = await createItem();
               // change to the single item page
               console.log(res);
               Router.push({
@@ -99,7 +99,7 @@ class CreateItem extends Component {
                   onChange={this.uploadFile}
                 />
                 {this.state.image && (
-                  <img width='200' src={this.state.image} alt="Upload Preview" />
+                  <img width='200 ' src={this.state.image} alt="Upload Preview" />
                 )}
               </label>
 
