@@ -7,6 +7,8 @@ const Query = {
 
     return items;
   },
+  item: forwardTo('db')
+
 };
 
 export default Query;
