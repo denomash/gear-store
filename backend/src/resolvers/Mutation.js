@@ -35,10 +35,10 @@ const Mutations = {
     };
 
     // 1. Find the item
-    const item = await context.db.query.item({ where }, `{ id title}`)
+    const item = await context.db.query.item({ where }, info);
 
     // 2. check if they own that item, or have the permisions
-      // TODO
+    // TODO
     // Delete the item
     return context.db.mutation.deleteItem(
       {

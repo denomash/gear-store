@@ -9,7 +9,7 @@ type Mutation {
     largeImage: String
   ): Item!
   updateItem(id: ID!, title: String, description: String, price: Int): Item!
-  deleteItem(where: ItemWhereUniqueInput!): Item
+  deleteItem(id: ID!): Item
 }
 
 type Query {
