@@ -30,9 +30,9 @@ const Signup = () => {
         return (
           <Form
             method="post"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              signup();
+              await signup();
 
               setEmail("");
               setName("");
