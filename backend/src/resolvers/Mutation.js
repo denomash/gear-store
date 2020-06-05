@@ -84,15 +84,19 @@ const Mutations = {
 
   async signin(parent, { email, password }, context, info) {
     // check if there is a user with that email
-    const user = await context.db.query.user({ where: { email } });
+    const user = await context.db.query.user({ where: { email } }, info);
+
     if (!user) {
       throw new Error(`No such user found for email ${email}`);
     }
+
     // check if their password is correct
     const valid = await bcrypt.compare(password, user.password);
+
     if (!valid) {
       throw new Error("Invalid password");
     }
+
     // generate the JWT Token
     const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
 

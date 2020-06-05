@@ -9,18 +9,20 @@ const Query = {
   },
   item: forwardTo("db"),
   itemsConnection: forwardTo("db"),
-  me(parent, args, context, info) {
+  async me(parent, args, context, info) {
     // check if there is a current user id
     if (!context.request.userId) {
       return null;
     }
 
-    return context.db.query.user(
+    const user = await context.db.query.user(
       {
         where: { id: context.request.userId },
       },
       info
     );
+
+    return user;
   },
 };
 
