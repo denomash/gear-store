@@ -6,46 +6,41 @@ import Form from "./styles/Form";
 import Error from "./ErrorMessage";
 import { CURRENT_USER_QUERY } from "./User";
 
-const SIGNUP_MUTATION = gql`
-  mutation SIGNUP_MUTATION(
-    $email: String!
-    $name: String!
-    $password: String!
-  ) {
-    signup(name: $name, email: $email, password: $password) {
+const SIGNIN_MUTATION = gql`
+  mutation SIGNIN_MUTATION($email: String!, $password: String!) {
+    signin(email: $email, password: $password) {
       id
       email
       name
+      password
     }
   }
 `;
 
-const Signup = () => {
+const Signin = () => {
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
   return (
     <Mutation
-      mutation={SIGNUP_MUTATION}
-      variables={{ name, email, password }}
+      mutation={SIGNIN_MUTATION}
+      variables={{ email, password }}
       refetchQueries={[{ query: CURRENT_USER_QUERY }]}
     >
-      {(signup, { error, loading }) => {
+      {(signin, { error, loading }) => {
         return (
           <Form
             method="post"
             onSubmit={async (e) => {
               e.preventDefault();
-              await signup();
+              await signin();
 
               setEmail("");
-              setName("");
               setPassword("");
             }}
           >
             <fieldset disabled={loading} aria-busy={loading}>
-              <h2>Sign Up for An Account</h2>
+              <h2>Sign Into your Account</h2>
               <Error error={error} />
               <label htmlFor="email">
                 <input
@@ -54,15 +49,6 @@ const Signup = () => {
                   placeholder="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                />
-              </label>
-              <label htmlFor="name">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
                 />
               </label>
               <label htmlFor="password">
@@ -75,7 +61,7 @@ const Signup = () => {
                 />
               </label>
 
-              <button type="submit">Sign Up!</button>
+              <button type="submit">Sign In!</button>
             </fieldset>
           </Form>
         );
@@ -84,4 +70,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Signin;

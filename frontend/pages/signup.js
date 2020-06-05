@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Signup from "../components/Signup";
+import Signin from "../components/Signin";
 
 const Common = styled.div`
   display: grid;
@@ -10,8 +11,7 @@ const SignupPage = () => {
   return (
     <Common>
       <Signup />
-      <Signup />
-      <Signup />
+      <Signin />
     </Common>
   );
 };
