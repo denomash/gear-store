@@ -140,8 +140,6 @@ const Mutations = {
       info
     );
 
-    console.log("RES", res);
-
     // Email them that reset token
 
     // return {
