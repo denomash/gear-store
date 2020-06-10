@@ -10,6 +10,7 @@ const REQUEST_RESET_MUTATION = gql`
     requestReset(email: $email) {
       id
       name
+      email
       resetToken
       resetTokenExpiry
     }
