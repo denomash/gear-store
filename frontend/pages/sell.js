@@ -1,8 +1,11 @@
 import CreateItem from "../components/CreateItem";
+import PrivateRoutes from "../components/PrivateRoutes";
 
-const Sell = (Props) => (
+const Sell = (props) => (
   <div>
-    <CreateItem />
+    <PrivateRoutes>
+      <CreateItem />
+    </PrivateRoutes>
   </div>
 );
 
