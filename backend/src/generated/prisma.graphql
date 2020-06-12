@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/dennis-macharia-47a7f9/gear--store/dev
-# timestamp: Tue Jun 02 2020 22:59:59 GMT+0300 (East Africa Time)
+# timestamp: Fri Jun 12 2020 21:44:56 GMT+0300 (East Africa Time)
 
 type AggregateDog {
   count: Int!
@@ -237,6 +237,7 @@ type Item implements Node {
   image: String
   largeImage: String
   price: Int!
+  user: User!
 }
 
 """A connection to a list of items."""
@@ -256,6 +257,7 @@ input ItemCreateInput {
   image: String
   largeImage: String
   price: Int!
+  user: UserCreateOneInput!
 }
 
 """An edge in a connection."""
@@ -336,6 +338,7 @@ input ItemUpdateInput {
   image: String
   largeImage: String
   price: Int
+  user: UserUpdateOneRequiredInput
 }
 
 input ItemUpdateManyMutationInput {
@@ -577,6 +580,7 @@ input ItemWhereInput {
 
   """All values greater than or equal the given value."""
   price_gte: Int
+  user: UserWhereInput
 }
 
 input ItemWhereUniqueInput {
@@ -590,24 +594,24 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createUser(data: UserCreateInput!): User!
   createItem(data: ItemCreateInput!): Item!
   createDog(data: DogCreateInput!): Dog!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  createUser(data: UserCreateInput!): User!
   updateItem(data: ItemUpdateInput!, where: ItemWhereUniqueInput!): Item
   updateDog(data: DogUpdateInput!, where: DogWhereUniqueInput!): Dog
-  deleteUser(where: UserWhereUniqueInput!): User
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   deleteItem(where: ItemWhereUniqueInput!): Item
   deleteDog(where: DogWhereUniqueInput!): Dog
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  deleteUser(where: UserWhereUniqueInput!): User
   upsertItem(where: ItemWhereUniqueInput!, create: ItemCreateInput!, update: ItemUpdateInput!): Item!
   upsertDog(where: DogWhereUniqueInput!, create: DogCreateInput!, update: DogUpdateInput!): Dog!
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   updateManyItems(data: ItemUpdateManyMutationInput!, where: ItemWhereInput): BatchPayload!
   updateManyDogs(data: DogUpdateManyMutationInput!, where: DogWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   deleteManyItems(where: ItemWhereInput): BatchPayload!
   deleteManyDogs(where: DogWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -647,15 +651,15 @@ enum Permission {
 }
 
 type Query {
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   items(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Item]!
   dogs(where: DogWhereInput, orderBy: DogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Dog]!
-  user(where: UserWhereUniqueInput!): User
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   item(where: ItemWhereUniqueInput!): Item
   dog(where: DogWhereUniqueInput!): Dog
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  user(where: UserWhereUniqueInput!): User
   itemsConnection(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ItemConnection!
   dogsConnection(where: DogWhereInput, orderBy: DogOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): DogConnection!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -665,9 +669,9 @@ type Query {
 }
 
 type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   item(where: ItemSubscriptionWhereInput): ItemSubscriptionPayload
   dog(where: DogSubscriptionWhereInput): DogSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
 type User implements Node {
@@ -698,6 +702,11 @@ input UserCreateInput {
   resetToken: String
   resetTokenExpiry: Float
   permissions: UserCreatepermissionsInput
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreatepermissionsInput {
@@ -777,6 +786,15 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdateDataInput {
+  name: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserUpdatepermissionsInput
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -795,8 +813,20 @@ input UserUpdateManyMutationInput {
   permissions: UserUpdatepermissionsInput
 }
 
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+}
+
 input UserUpdatepermissionsInput {
   set: [Permission!]
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserWhereInput {

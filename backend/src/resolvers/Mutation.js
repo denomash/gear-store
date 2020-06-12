@@ -7,9 +7,18 @@ import { transport, makeANiceEmail } from "../mail";
 
 const Mutations = {
   async createItem(parent, args, context, info) {
+    if (!context.request.userId) {
+      throw new Error("You must be logged in to do that!");
+    }
     const item = await context.db.mutation.createItem(
       {
         data: {
+          // create a relationship between Item and User
+          user: {
+            connect: {
+              id: context.request.userId,
+            },
+          },
           ...args,
         },
       },
@@ -143,7 +152,7 @@ const Mutations = {
     );
 
     // Email them that reset token
-    const mailRes = await transport.sendMail({
+    await transport.sendMail({
       from: "dennismacharia4747@gmail.com",
       to: user.email,
       subject: "Your Password Reset Token",
