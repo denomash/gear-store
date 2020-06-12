@@ -25,7 +25,25 @@ server.express.use((req, res, next) => {
   next();
 });
 
-// TODO use express middleware to populate current user
+// TODO use express middleware to populate current user on each request
+server.express.use(async (req, res, next) => {
+  if (!req.userId) return next();
+
+  const user = await db.query.user(
+    { where: { id: req.userId } },
+    null,
+    "{ name }"
+  );
+
+  // db.query.user(
+  //   { where: { id: req.userId } },
+  //   "{ id name permissions email }"
+  // );
+
+  console.log(">>>>>USER<<<<<<<", user);
+
+  next();
+});
 
 server.start(
   {
