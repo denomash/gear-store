@@ -4,6 +4,7 @@ import { randomBytes } from "crypto";
 import { promisify } from "util";
 
 import { transport, makeANiceEmail } from "../mail";
+import { hasPermission } from "../utils";
 
 const Mutations = {
   async createItem(parent, args, context, info) {
@@ -53,7 +54,7 @@ const Mutations = {
     // 1. Find the item
     const item = await context.db.query.item({ where }, info);
 
-    // 2. check if they own that item, or have the permisions
+    // 2. check if they own that item, or have the permissions
     // TODO
     // Delete the item
     return context.db.mutation.deleteItem(
@@ -222,6 +223,36 @@ const Mutations = {
 
     // 8. return the new user
     return updatedUser;
+  },
+
+  async updatePermissions(parent, args, context, info) {
+    // 1. Check if user is logged in
+    if (!context.request.userId) {
+      throw new Error("You must be logged in to do that!");
+    }
+
+    // // 2. Query the current user
+    // const user = context.db.query.user({
+    //   where: { id: context.request.userId },
+    // });
+
+    // 3. Check if they have permissions to do this
+    hasPermission(context.request.user, ["ADMIN", "PERMISSIONUPDATE"]);
+
+    // 4. Update the permissions
+    return context.db.mutation.updateUser(
+      {
+        data: {
+          permissions: {
+            set: args.permissions,
+          },
+        },
+        where: {
+          id: args.userId,
+        },
+      },
+      info
+    );
   },
 };
 
