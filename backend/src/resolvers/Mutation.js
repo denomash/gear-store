@@ -52,10 +52,21 @@ const Mutations = {
     };
 
     // 1. Find the item
-    const item = await context.db.query.item({ where }, info);
+    const item = await context.db.query.item(
+      { where },
+      `{id title user { id }}`
+    );
 
     // 2. check if they own that item, or have the permissions
-    // TODO
+    const ownsItem = item.user.id === context.request.userId;
+    const hasPermission = context.request.user.permissions.some((permission) =>
+      ["ADMIN", "ITEMUPDATE"].includes(permission)
+    );
+
+    if (!ownsItem && !hasPermission) {
+      throw new Error("You don't have permission to do that");
+    }
+
     // Delete the item
     return context.db.mutation.deleteItem(
       {
