@@ -15,7 +15,7 @@
     "bcryptjs": "2.4.3",
     "cookie-parser": "^1.4.3",
     "dotenv": "8.2.0",
-    "graphql": "^15.1.0",
+    "graphql": "^0.13.0",
     "graphql-cli": "^4.0.0",
     "graphql-yoga": "1.18.3",
     "jsonwebtoken": "8.5.1",
@@ -26,5 +26,9 @@
     "prisma-binding": "^2.3.16",
     "stripe": "^8.63.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "resolutions": {
+    "graphql": "^0.13.0",
+    "**/graphql": "^0.13.0"
+  }
 }

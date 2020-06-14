@@ -31,15 +31,11 @@ const Query = {
       throw new Error("You must be logged in to do that!");
     }
 
-    // console.log("<<<<USER>>>>>", context.request.user);
     // 2. Check if the user has permissions to query all users
     hasPermission(context.request.user, ["ADMIN", "PERMISSIONUPDATE"]);
 
-    
-
     // 3. If they do, query all the users!
-
-    return context.db.users({}, info);
+    return context.db.query.users({}, info);
   },
 };
 
