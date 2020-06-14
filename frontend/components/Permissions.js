@@ -1,9 +1,11 @@
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
+import PropTypes from "prop-types";
 
 import Error from "./ErrorMessage";
 import Table from "./styles/Table";
 import SickButton from "./styles/SickButton";
+import { useState } from "react";
 
 const possiblePermission = [
   "ADMIN",
@@ -45,7 +47,7 @@ const Permissions = () => (
             </thead>
             <tbody>
               {data.users.map((user) => (
-                <User key={user.id} user={user} />
+                <UserPermissions key={user.id} user={user} />
               ))}
             </tbody>
           </Table>
@@ -55,21 +57,56 @@ const Permissions = () => (
   </Query>
 );
 
-const User = ({ user }) => (
-  <tr>
-    <td>{user.name}</td>
-    <td>{user.email}</td>
-    {possiblePermission.map((permission) => (
-      <td key={permission}>
-        <label htmlFor={`${user.id}-permission-${permission}`}>
-          <input type="checkbox" />
-        </label>
+const UserPermissions = ({ user }) => {
+  const [permissions, setPermissions] = useState(user.permissions);
+
+  const hanlePermissionsChange = (e) => {
+    const checkbox = e.target;
+
+    //   Take a copy of the current permissions
+    let updatedPermissions = [...permissions];
+
+    if (checkbox.checked) {
+      updatedPermissions.push(checkbox.value);
+    } else {
+      updatedPermissions = updatedPermissions.filter(
+        (permission) => permission !== checkbox.value
+      );
+    }
+
+    setPermissions(updatedPermissions);
+  };
+
+  return (
+    <tr>
+      <td>{user.name}</td>
+      <td>{user.email}</td>
+      {possiblePermission.map((permission) => (
+        <td key={permission}>
+          <label htmlFor={`${user.id}-permission-${permission}`}>
+            <input
+              type="checkbox"
+              checked={permissions.includes(permission)}
+              value={permission}
+              onChange={(e) => hanlePermissionsChange(e)}
+            />
+          </label>
+        </td>
+      ))}
+      <td>
+        <SickButton>Update</SickButton>
       </td>
-    ))}
-    <td>
-      <SickButton>Update</SickButton>
-    </td>
-  </tr>
-);
+    </tr>
+  );
+};
+
+UserPermissions.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+    id: PropTypes.string,
+    permissions: PropTypes.string,
+  }).isRequired,
+};
 
 export default Permissions;
