@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import React from 'react';
 import Nav from './Nav';
+import Cart from './Cart';
 
 // routeChangeStart(url) - Fires when a route starts to change
 Router.onRouteChangeStart = () => {
@@ -74,7 +75,7 @@ const Header = () => {
       <div className="sub-bar">
         <p>Search</p>
       </div>
-      <div>Cart</div>
+      <Cart />
     </StyledHeader>
   );
 };
